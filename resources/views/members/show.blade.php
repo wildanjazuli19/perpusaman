@@ -30,19 +30,37 @@
     </div>
 
     @if (isset($hybridDecryption, $baselineDecryption))
+        <div class="section-title decryption-title">
+            <div>
+                <h2>Data hasil dekripsi</h2>
+                <p>Data berikut berhasil dipulihkan dari ciphertext setelah autentikasi diverifikasi.</p>
+            </div>
+        </div>
         <div class="result-grid">
             @foreach (['hybrid' => $hybridDecryption, 'baseline' => $baselineDecryption] as $label => $result)
                 <section class="card result-card">
-                    <h2>{{ $label === 'hybrid' ? 'Hybrid ML-KEM-768' : 'Baseline AES-256-GCM' }}</h2>
+                    <div class="detail-header decryption-header">
+                        <div>
+                            <h3>{{ $label === 'hybrid' ? 'Hybrid ML-KEM-768' : 'Baseline AES-256-GCM' }}</h3>
+                            <p>{{ $label === 'hybrid' ? 'ML-KEM-768 + HKDF-SHA-256 + AES-256-GCM' : 'AES-256-GCM dengan kunci baseline' }}</p>
+                        </div>
+                        @if ($result['authenticated'])
+                            <span class="badge">Autentikasi valid</span>
+                        @else
+                            <span class="badge badge-muted">Dekripsi ditolak</span>
+                        @endif
+                    </div>
                     @if ($result['authenticated'])
-                        <span class="badge">Autentikasi valid</span>
                         <dl class="data-list">
                             @foreach ($result['plaintext'] as $key => $value)
-                                <dt>{{ str_replace('_', ' ', ucfirst($key)) }}</dt><dd>{{ $value }}</dd>
+                                <div class="data-item">
+                                    <dt>{{ str_replace('_', ' ', ucfirst($key)) }}</dt>
+                                    <dd>{{ $value }}</dd>
+                                </div>
                             @endforeach
                         </dl>
                     @else
-                        <div class="alert alert-danger" style="margin: 12px 0 0">Dekripsi ditolak: authentication tag tidak valid.</div>
+                        <div class="alert alert-danger decryption-error">Dekripsi ditolak: authentication tag tidak valid.</div>
                     @endif
                 </section>
             @endforeach

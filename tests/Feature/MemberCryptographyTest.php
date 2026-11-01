@@ -60,7 +60,13 @@ class MemberCryptographyTest extends TestCase
         $this->actingAs($user)
             ->post(route('members.decrypt', $member))
             ->assertOk()
+            ->assertSee('Data hasil dekripsi')
             ->assertSee('Anggota Uji')
+            ->assertSee('TEST-001')
+            ->assertSee('Meruya')
+            ->assertSee('2027-12-31')
+            ->assertSee('uji@example.test')
+            ->assertSee('08123456789')
             ->assertSee('Autentikasi valid');
     }
 
