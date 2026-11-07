@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use RuntimeException;
 
 class ProfileController extends Controller
 {
@@ -48,9 +51,31 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        Auth::logout();
+        $deleted = DB::transaction(function () use ($user): bool {
+            $registrationLock = DB::table('app_settings')
+                ->where('key', 'registration_locked')
+                ->lockForUpdate()
+                ->first();
 
-        $user->delete();
+            if ($registrationLock === null) {
+                throw new RuntimeException('Pengaturan penguncian pendaftaran tidak ditemukan.');
+            }
+
+            if (User::query()->count() <= 1) {
+                return false;
+            }
+
+            $user->delete();
+
+            return true;
+        });
+
+        if (! $deleted) {
+            return Redirect::route('profile.edit')
+                ->withErrors(['password' => 'Akun Admin terakhir tidak dapat dihapus.'], 'userDeletion');
+        }
+
+        Auth::guard('web')->logoutCurrentDevice();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

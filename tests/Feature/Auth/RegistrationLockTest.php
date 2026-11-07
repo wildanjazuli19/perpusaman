@@ -11,7 +11,7 @@ class RegistrationLockTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_registration_stays_locked_after_the_first_admin_deletes_their_account(): void
+    public function test_registration_stays_locked_and_last_admin_cannot_delete_their_account(): void
     {
         $this->post('/register', [
             'name' => 'Admin Pertama',
@@ -24,13 +24,18 @@ class RegistrationLockTest extends TestCase
 
         $this->actingAs($admin)->delete('/profile', [
             'password' => 'password',
-        ])->assertRedirect('/');
+        ])
+            ->assertSessionHasErrorsIn('userDeletion', 'password')
+            ->assertRedirect('/profile');
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseHas('users', ['id' => $admin->id]);
         $this->assertDatabaseHas('app_settings', [
             'key' => 'registration_locked',
             'value' => '1',
         ]);
+
+        $this->post('/logout')->assertRedirect('/');
 
         $this->get('/register')->assertNotFound();
         $this->post('/register', [
@@ -40,7 +45,7 @@ class RegistrationLockTest extends TestCase
             'password_confirmation' => 'password',
         ])->assertNotFound();
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertDatabaseCount('users', 1);
     }
 
     public function test_existing_account_is_migrated_with_registration_locked(): void

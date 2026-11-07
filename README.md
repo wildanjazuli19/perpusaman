@@ -37,6 +37,16 @@ php artisan serve
 
 Buka `http://127.0.0.1:8000`, lalu buat akun pengelola pertama. Setelah akun dibuat, pendaftaran publik ditutup.
 
+## Perlindungan akun Admin
+
+Semua akun pada prototipe ini memiliki akses Admin. Penghapusan akun memerlukan kata sandi saat ini dan ditolak jika akun tersebut adalah Admin terakhir; penghapusan akun oleh salah satu dari beberapa Admin tetap diperbolehkan.
+
+Jika Admin lupa kata sandi, gunakan **Lupa kata sandi?** pada halaman login. Tautan reset dikirim ke alamat email akun dan dapat digunakan untuk menetapkan kata sandi baru. Pastikan mailer di `.env` dikonfigurasi agar email benar-benar terkirim. Secara default `MAIL_MAILER=log`, sehingga tautan reset dicatat ke `storage/logs/laravel.log` dan tidak dikirim melalui email.
+
+## Retensi audit log
+
+Log aktivitas disimpan selama 365 hari sejak dibuat. Log yang lebih lama dihapus otomatis setiap hari oleh scheduler Laravel. Atur `ACTIVITY_LOG_RETENTION_DAYS` di `.env` ke bilangan bulat minimal `1` untuk mengubah masa retensi. Untuk menjalankan pembersihan manual, gunakan `php artisan activity-logs:purge`. Di lingkungan produksi, pastikan Laravel scheduler dijalankan secara rutin (`php artisan schedule:run` setiap menit melalui cron).
+
 ## Pengelolaan kunci
 
 Key pair ML-KEM-768 dibuat saat enkripsi pertama dan disimpan di `storage/app/private/keys/ml-kem-768.json`. Private key dibungkus menggunakan enkripsi Laravel dan `APP_KEY`; file kunci lokal tidak masuk Git. Saat digunakan, aplikasi memastikan lokasi key berada di luar direktori publik, mengatur permission direktori menjadi `0700`, serta file private key dan file lock menjadi `0600`. Jika permission aman tidak dapat diterapkan, operasi gagal. Lokasi alternatif melalui `MLKEM_KEY_PATH` juga harus berada di luar direktori publik. Simpan cadangan file tersebut dan `APP_KEY` secara terpisah. Perubahan `APP_KEY` tanpa pemulihan key lama membuat private key yang tersimpan tidak dapat dibuka kembali.
@@ -49,4 +59,4 @@ Kunci AES baseline diturunkan dari `APP_KEY` melalui HKDF. Nonce GCM dan salt HK
 php artisan test
 ```
 
-Benchmark mencatat hasil runtime lokal; hasilnya bukan klaim performa umum. Gunakan data sintetis untuk demo dan pengujian. Prototipe ini belum menyediakan otorisasi berbasis peran, audit log, deployment hardening, backup terenkripsi, maupun integrasi dengan data produksi.
+Benchmark mencatat hasil runtime lokal; hasilnya bukan klaim performa umum. Gunakan data sintetis untuk demo dan pengujian. Prototipe ini belum menyediakan otorisasi berbasis peran, deployment hardening, backup terenkripsi, maupun integrasi dengan data produksi.

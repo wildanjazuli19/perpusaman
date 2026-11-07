@@ -64,6 +64,7 @@ class ProfileTest extends TestCase
     public function test_user_can_delete_their_account(): void
     {
         $user = User::factory()->create();
+        $otherAdmin = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
@@ -76,7 +77,28 @@ class ProfileTest extends TestCase
             ->assertRedirect('/');
 
         $this->assertGuest();
-        $this->assertNull($user->fresh());
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+        $this->assertNotNull($otherAdmin->fresh());
+    }
+
+    public function test_last_admin_cannot_delete_their_account(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->delete('/profile', [
+                'password' => 'password',
+            ]);
+
+        $response
+            ->assertSessionHasErrorsIn('userDeletion', 'password')
+            ->assertRedirect('/profile');
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertNotNull($user->fresh());
+        $this->assertDatabaseCount('users', 1);
     }
 
     public function test_correct_password_must_be_provided_to_delete_account(): void

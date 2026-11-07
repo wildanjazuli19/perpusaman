@@ -70,4 +70,34 @@ class PasswordResetTest extends TestCase
             return true;
         });
     }
+
+    public function test_admin_can_recover_access_by_resetting_password_from_email(): void
+    {
+        Notification::fake();
+
+        $admin = User::factory()->create();
+        $newPassword = 'NewAdminPassword123!';
+
+        $this->post('/forgot-password', ['email' => $admin->email]);
+
+        Notification::assertSentTo($admin, ResetPassword::class, function ($notification) use ($admin, $newPassword) {
+            $this->post('/reset-password', [
+                'token' => $notification->token,
+                'email' => $admin->email,
+                'password' => $newPassword,
+                'password_confirmation' => $newPassword,
+            ])
+                ->assertSessionHasNoErrors()
+                ->assertRedirect(route('login'));
+
+            $this->post('/login', [
+                'email' => $admin->email,
+                'password' => $newPassword,
+            ])->assertRedirect(route('dashboard'));
+
+            $this->assertAuthenticatedAs($admin);
+
+            return true;
+        });
+    }
 }
