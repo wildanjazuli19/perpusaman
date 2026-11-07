@@ -96,12 +96,14 @@ class MemberCryptographyTest extends TestCase
     }
 
     public function test_authenticated_dashboard_renders(): void
-    {
-        $this->actingAs(User::factory()->create())
-            ->get(route('dashboard'))
-            ->assertOk()
-            ->assertSee('Ruang kendali keamanan');
-    }
+{
+    $this->actingAs(User::factory()->create())
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee('Dashboard Perpustakaan')
+        ->assertSee('Keamanan & eksperimen', false)
+        ->assertSee('ML-KEM-768');
+}
 
     public function test_benchmark_records_real_hybrid_and_baseline_results(): void
     {

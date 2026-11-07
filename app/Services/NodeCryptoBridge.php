@@ -30,7 +30,10 @@ class NodeCryptoBridge
             $binary,
             base_path('scripts/mlkem.cjs'),
             $operation,
-        ], base_path());
+        ], base_path(), [
+            'SystemRoot' => getenv('SystemRoot') ?: 'C:\Windows',
+            'WINDIR' => getenv('WINDIR') ?: 'C:\Windows',
+        ]);
         $process->setInput(json_encode($input, JSON_THROW_ON_ERROR));
         $process->setTimeout(60);
         $process->run();
