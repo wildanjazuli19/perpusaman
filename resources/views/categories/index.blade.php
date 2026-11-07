@@ -13,7 +13,7 @@
     @endif
 
     <div class="category-layout">
-        <section class="card card-pad">
+        <section class="card card-pad category-create-card">
             <div class="section-title">
                 <div>
                     <h2>Tambah kategori</h2>
@@ -32,24 +32,40 @@
                     <textarea id="new-category-description" name="description" rows="4" maxlength="1000" placeholder="Keterangan kategori (opsional)" @error('description', 'categoryCreate') aria-invalid="true" aria-describedby="new-category-description-error" @enderror>{{ old('description', '', 'categoryCreate') }}</textarea>
                     @error('description', 'categoryCreate')<span id="new-category-description-error" class="field-error">{{ $message }}</span>@enderror
                 </div>
-                <button class="button" type="submit">Tambah kategori</button>
+                <button class="button category-save-button" type="submit">
+                    <span aria-hidden="true">＋</span>
+                    <span>Simpan kategori</span>
+                </button>
             </form>
         </section>
 
-        <section class="card card-pad">
-            <div class="section-title">
+        <section class="card card-pad category-list-card">
+            <div class="section-title category-list-heading">
                 <div>
                     <h2>Daftar kategori</h2>
-                    <p>{{ $categories->total() }} kategori terdaftar.</p>
+                    <p>Kelola nama, deskripsi, dan penggunaan kategori.</p>
                 </div>
+                <span class="category-count">{{ $categories->total() }} <small>kategori</small></span>
             </div>
 
             @if ($categories->isEmpty())
-                <div class="empty-state">Belum ada kategori. Tambahkan kategori pertama melalui formulir.</div>
+                <div class="category-empty-state">
+                    <span class="category-empty-icon" aria-hidden="true">▦</span>
+                    <strong>Belum ada kategori</strong>
+                    <p>Tambahkan kategori melalui formulir untuk mulai mengelompokkan koleksi buku.</p>
+                </div>
             @else
                 <div class="category-list">
                     @foreach ($categories as $category)
                         <article class="category-item">
+                            <div class="category-item-heading">
+                                <span class="category-item-icon" aria-hidden="true">▦</span>
+                                <div>
+                                    <strong>Kategori buku</strong>
+                                    <span>ID {{ $category->id }}</span>
+                                </div>
+                                <span class="badge badge-muted">{{ $category->books_count }} buku</span>
+                            </div>
                             <form method="POST" action="{{ route('categories.update', $category) }}" class="category-edit-form">
                                 @csrf
                                 @method('PUT')
@@ -63,17 +79,24 @@
                                     <textarea id="category-description-{{ $category->id }}" name="description" rows="2" maxlength="1000" @error('description', 'categoryEdit'.$category->id) aria-invalid="true" aria-describedby="category-description-error-{{ $category->id }}" @enderror>{{ old('description', $category->description, 'categoryEdit'.$category->id) }}</textarea>
                                     @error('description', 'categoryEdit'.$category->id)<span id="category-description-error-{{ $category->id }}" class="field-error">{{ $message }}</span>@enderror
                                 </div>
-                                <div class="category-footer">
-                                    <span class="badge badge-muted">{{ $category->books_count }} buku</span>
-                                    <button class="button button-secondary button-small" type="submit">Simpan</button>
+                                <div class="category-edit-actions">
+                                    <button class="button category-save-button category-save-small" type="submit">
+                                        <span aria-hidden="true">✓</span>
+                                        <span>Simpan perubahan</span>
+                                    </button>
                                 </div>
                             </form>
                             <form method="POST" action="{{ route('categories.destroy', $category) }}" class="category-delete-form" onsubmit="return confirm('Hapus kategori ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button class="link-button danger-link" type="submit" @disabled($category->books_count > 0)>Hapus</button>
+                                <button class="button button-danger button-small category-delete-button" type="submit" @disabled($category->books_count > 0)>
+                                    <span aria-hidden="true">×</span>
+                                    <span>Hapus kategori</span>
+                                </button>
                                 @if ($category->books_count > 0)
-                                    <span class="category-delete-hint">Masih digunakan</span>
+                                    <span class="category-delete-hint">Masih digunakan oleh buku, tidak dapat dihapus.</span>
+                                @else
+                                    <span class="category-delete-hint">Kategori kosong dapat dihapus.</span>
                                 @endif
                             </form>
                         </article>

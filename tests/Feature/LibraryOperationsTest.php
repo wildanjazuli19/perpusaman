@@ -90,6 +90,10 @@ class LibraryOperationsTest extends TestCase
             ->assertOk()
             ->assertSee('category-layout')
             ->assertSee('Tambah kategori')
+            ->assertSee('Simpan kategori')
+            ->assertSee('category-item-heading')
+            ->assertSee('Simpan perubahan')
+            ->assertSee('Hapus kategori')
             ->assertSee('Masih digunakan')
             ->assertSee('category-name-'.$category->id);
 
