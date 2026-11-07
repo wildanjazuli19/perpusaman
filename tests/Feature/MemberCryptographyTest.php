@@ -88,6 +88,19 @@ class MemberCryptographyTest extends TestCase
 
         $member = Member::query()->sole();
         $response->assertRedirect(route('members.show', $member));
+        $this->get(route('members.index'))
+            ->assertOk()
+            ->assertSee('Rekaman anggota')
+            ->assertSee('member-table-wrap')
+            ->assertSee('Identitas disimpan terenkripsi')
+            ->assertSee('Lihat detail');
+
+        $this->get(route('members.show', $member))
+            ->assertOk()
+            ->assertSee('Pengukuran saat enkripsi')
+            ->assertSee('member-metrics-grid')
+            ->assertSee('Lihat rincian waktu tiap tahap');
+
         $storedRecord = json_encode(DB::table('members')->where('id', $member->id)->first(), JSON_THROW_ON_ERROR);
 
         foreach ($memberData as $value) {
@@ -133,14 +146,14 @@ class MemberCryptographyTest extends TestCase
     }
 
     public function test_authenticated_dashboard_renders(): void
-{
-    $this->actingAs(User::factory()->create())
-        ->get(route('dashboard'))
-        ->assertOk()
-        ->assertSee('Dashboard Perpustakaan')
-        ->assertSee('Keamanan & eksperimen', false)
-        ->assertSee('ML-KEM-768');
-}
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Dashboard Perpustakaan')
+            ->assertSee('Keamanan & eksperimen', false)
+            ->assertSee('ML-KEM-768');
+    }
 
     public function test_benchmark_records_real_hybrid_and_baseline_results(): void
     {

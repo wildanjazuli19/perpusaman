@@ -8,8 +8,8 @@
         <a class="button button-secondary" href="{{ route('members.index') }}">Kembali</a>
     </div>
 
-    <section class="card card-pad form-card">
-        <div class="callout" style="margin-top: 0">
+    <section class="card card-pad form-card member-form-card">
+        <div class="callout member-form-callout">
             <span><strong>Dua skema dibuat bersamaan.</strong> Hybrid ML-KEM-768/HKDF-SHA-256/AES-256-GCM dan AES-256-GCM baseline untuk perbandingan.</span>
         </div>
         <form method="POST" action="{{ route('members.store') }}">
@@ -46,7 +46,7 @@
                     @error('telepon')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
             </div>
-            <p class="field-help" style="margin-top: 18px">Kunci AES baseline diturunkan dari APP_KEY. Jangan gunakan data anggota nyata pada prototipe ini.</p>
+            <p class="field-help member-form-help">Kunci AES baseline diturunkan dari APP_KEY. Jangan gunakan data anggota nyata pada prototipe ini.</p>
             <div class="form-actions">
                 <a class="button button-secondary" href="{{ route('members.index') }}">Batal</a>
                 <button class="button" type="submit">Enkripsi dan simpan</button>

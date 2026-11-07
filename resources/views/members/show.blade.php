@@ -5,7 +5,7 @@
             <h1>Anggota #{{ $member->id }}</h1>
             <p class="subtitle">Dibuat {{ $member->created_at->format('d M Y, H:i:s') }} · plaintext tidak disimpan.</p>
         </div>
-        <a class="button button-secondary" href="{{ route('members.index') }}">Semua anggota</a>
+        <a class="button button-secondary" href="{{ route('members.index') }}">Kembali ke data anggota</a>
     </div>
 
     @if (isset($tamperRejected))
@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <div class="action-row">
+    <div class="member-action-row">
         <form method="POST" action="{{ route('members.decrypt', $member) }}">
             @csrf
             <button class="button" type="submit">Dekripsi dan verifikasi</button>
@@ -67,20 +67,41 @@
         </div>
     @endif
 
-    <section class="card card-pad" style="margin-bottom: 16px">
+    <section class="card card-pad member-metrics-card">
         <div class="section-title">
-            <div><h2>Pengukuran saat enkripsi</h2><p>Waktu proses aktual dari permintaan enkripsi rekaman ini.</p></div>
+            <div>
+                <p class="eyebrow">Kinerja proses</p>
+                <h2>Pengukuran saat enkripsi</h2>
+                <p>Waktu proses aktual dan overhead penyimpanan rekaman ini.</p>
+            </div>
         </div>
-        <table class="metric-table">
-            <tbody>
-                <tr><td>Hybrid - encapsulation ML-KEM</td><td>{{ number_format($member->metrics['kem_encapsulation_ms'], 3) }} ms</td></tr>
-                <tr><td>Hybrid - derivasi HKDF</td><td>{{ number_format($member->metrics['hkdf_ms'], 3) }} ms</td></tr>
-                <tr><td>Hybrid - enkripsi AES-GCM</td><td>{{ number_format($member->metrics['aes_encryption_ms'], 3) }} ms</td></tr>
-                <tr><td>Hybrid - total enkripsi</td><td>{{ number_format($member->metrics['total_encryption_ms'], 3) }} ms</td></tr>
-                <tr><td>Baseline - enkripsi AES-GCM</td><td>{{ number_format($member->metrics['baseline_encryption_ms'], 3) }} ms</td></tr>
-                <tr><td>Overhead penyimpanan hybrid</td><td>{{ number_format($member->metrics['storage_overhead_bytes']) }} byte</td></tr>
-            </tbody>
-        </table>
+        <div class="member-metrics-grid">
+            <article class="member-metric">
+                <span>Enkripsi hybrid</span>
+                <strong>{{ number_format($member->metrics['total_encryption_ms'], 3) }} <small>ms</small></strong>
+                <p>ML-KEM + HKDF + AES-GCM</p>
+            </article>
+            <article class="member-metric">
+                <span>Enkripsi baseline</span>
+                <strong>{{ number_format($member->metrics['baseline_encryption_ms'], 3) }} <small>ms</small></strong>
+                <p>AES-256-GCM</p>
+            </article>
+            <article class="member-metric">
+                <span>Overhead hybrid</span>
+                <strong>{{ number_format($member->metrics['storage_overhead_bytes']) }} <small>byte</small></strong>
+                <p>Dibanding baseline</p>
+            </article>
+        </div>
+        <details class="member-metric-details">
+            <summary>Lihat rincian waktu tiap tahap</summary>
+            <table class="metric-table">
+                <tbody>
+                    <tr><td>Encapsulation ML-KEM</td><td>{{ number_format($member->metrics['kem_encapsulation_ms'], 3) }} ms</td></tr>
+                    <tr><td>Derivasi HKDF</td><td>{{ number_format($member->metrics['hkdf_ms'], 3) }} ms</td></tr>
+                    <tr><td>Enkripsi AES-GCM</td><td>{{ number_format($member->metrics['aes_encryption_ms'], 3) }} ms</td></tr>
+                </tbody>
+            </table>
+        </details>
     </section>
 
     <div class="detail-grid">
