@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use RuntimeException;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
+use Throwable;
 
 class NodeCryptoBridge
 {
@@ -15,15 +17,27 @@ class NodeCryptoBridge
     public function call(string $operation, array $input = []): array
     {
         $configuredBinary = config('crypto.node_binary', 'node');
+
+        if (! is_string($configuredBinary) || $configuredBinary === '') {
+            Log::error('Node.js executable configuration is invalid.', [
+                'operation' => $operation,
+            ]);
+
+            throw new RuntimeException('Operasi kriptografi gagal. Silakan coba kembali atau hubungi administrator.');
+        }
+
         $containsPath = str_contains($configuredBinary, '/') || str_contains($configuredBinary, '\\');
         $binary = $containsPath
             ? (is_file($configuredBinary) && is_executable($configuredBinary) ? $configuredBinary : null)
             : (new ExecutableFinder)->find($configuredBinary);
 
         if ($binary === null) {
-            throw new RuntimeException(
-                "Node.js tidak ditemukan ({$configuredBinary}). Atur NODE_BINARY ke path executable Node.js."
-            );
+            Log::error('Configured Node.js executable was not found or is not executable.', [
+                'operation' => $operation,
+                'configured_binary' => $configuredBinary,
+            ]);
+
+            throw new RuntimeException('Operasi kriptografi gagal. Silakan coba kembali atau hubungi administrator.');
         }
 
         $process = new Process([
@@ -36,29 +50,56 @@ class NodeCryptoBridge
         ]);
         $process->setInput(json_encode($input, JSON_THROW_ON_ERROR));
         $process->setTimeout(60);
-        $process->run();
 
-        if (! $process->isSuccessful()) {
-            $output = trim($process->getErrorOutput() ?: $process->getOutput());
-            $exitStatus = $process->getExitCodeText() ?? 'proses dihentikan oleh sinyal';
-            $details = $output !== '' ? $output : 'Node.js tidak menghasilkan pesan error.';
+        try {
+            $process->run();
+        } catch (Throwable $exception) {
+            Log::error('Node.js cryptography process could not be started or completed.', [
+                'operation' => $operation,
+                'exception' => $exception->getMessage(),
+            ]);
 
             throw new RuntimeException(
-                "Operasi kriptografi gagal ({$exitStatus}): {$details}"
+                'Operasi kriptografi gagal. Silakan coba kembali atau hubungi administrator.'
+            );
+        }
+
+        if (! $process->isSuccessful()) {
+            $errorOutput = trim($process->getErrorOutput());
+            Log::error('Node.js cryptography process returned a failure.', [
+                'operation' => $operation,
+                'exit_code' => $process->getExitCode(),
+                'exit_status' => $process->getExitCodeText(),
+                'stderr' => $errorOutput === '' ? null : mb_substr($errorOutput, 0, 4000),
+                'stdout_present' => trim($process->getOutput()) !== '',
+            ]);
+
+            throw new RuntimeException(
+                'Operasi kriptografi gagal. Silakan coba kembali atau hubungi administrator.'
             );
         }
 
         try {
             $result = json_decode($process->getOutput(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
+            Log::error('Node.js cryptography process returned invalid JSON.', [
+                'operation' => $operation,
+                'exception' => $exception->getMessage(),
+            ]);
+
             throw new RuntimeException(
-                'Node.js mengembalikan respons JSON yang tidak valid.',
-                previous: $exception
+                'Operasi kriptografi gagal. Silakan coba kembali atau hubungi administrator.'
             );
         }
 
         if (! is_array($result)) {
-            throw new RuntimeException('Respons operasi kriptografi tidak valid.');
+            Log::error('Node.js cryptography process returned an unexpected response type.', [
+                'operation' => $operation,
+            ]);
+
+            throw new RuntimeException(
+                'Operasi kriptografi gagal. Silakan coba kembali atau hubungi administrator.'
+            );
         }
 
         return $result;

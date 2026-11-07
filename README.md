@@ -47,6 +47,10 @@ Jika Admin lupa kata sandi, gunakan **Lupa kata sandi?** pada halaman login. Tau
 
 Log aktivitas disimpan selama 365 hari sejak dibuat. Log yang lebih lama dihapus otomatis setiap hari oleh scheduler Laravel. Atur `ACTIVITY_LOG_RETENTION_DAYS` di `.env` ke bilangan bulat minimal `1` untuk mengubah masa retensi. Untuk menjalankan pembersihan manual, gunakan `php artisan activity-logs:purge`. Di lingkungan produksi, pastikan Laravel scheduler dijalankan secara rutin (`php artisan schedule:run` setiap menit melalui cron).
 
+## Penanganan error
+
+Detail error dari proses Node.js hanya dicatat di log aplikasi; respons ke pengguna menggunakan pesan umum. Error internal yang tidak ditangani juga menampilkan halaman 500 umum atau pesan JSON umum, termasuk saat debug aktif. Untuk menyelidiki kegagalan, Admin dapat memeriksa log aplikasi di `storage/logs/laravel.log` melalui akses server yang sesuai.
+
 ## Pengelolaan kunci
 
 Key pair ML-KEM-768 dibuat saat enkripsi pertama dan disimpan di `storage/app/private/keys/ml-kem-768.json`. Private key dibungkus menggunakan enkripsi Laravel dan `APP_KEY`; file kunci lokal tidak masuk Git. Saat digunakan, aplikasi memastikan lokasi key berada di luar direktori publik, mengatur permission direktori menjadi `0700`, serta file private key dan file lock menjadi `0600`. Jika permission aman tidak dapat diterapkan, operasi gagal. Lokasi alternatif melalui `MLKEM_KEY_PATH` juga harus berada di luar direktori publik. Simpan cadangan file tersebut dan `APP_KEY` secara terpisah. Perubahan `APP_KEY` tanpa pemulihan key lama membuat private key yang tersimpan tidak dapat dibuka kembali.
