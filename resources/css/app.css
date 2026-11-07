@@ -567,3 +567,78 @@ body:has(.sidebar-layout) {
         .circulation-form-actions .button { width: 100%; }
         .circulation-progress-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
     }
+
+    /* Cryptography experiment screens */
+    .experiment-heading { align-items: center; }
+    .experiment-heading form { margin: 0; }
+    .experiment-notice { margin: 0 0 18px; }
+    .experiment-history-card { overflow: hidden; }
+    .experiment-list-heading, .experiment-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .experiment-list-heading { margin-bottom: 16px; }
+    .experiment-list-heading h2, .experiment-section-heading h2 { margin: 0 0 5px; font-size: 17px; }
+    .experiment-list-heading p, .experiment-section-heading > div > p:last-child { margin: 0; color: #83928b; font-size: 12px; line-height: 1.6; }
+    .experiment-count { border: 1px solid #dcebe1; border-radius: 99px; padding: 7px 11px; background: #f3faf5; color: #33714d; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .experiment-count small { color: #658174; font-size: 10px; font-weight: 600; }
+    .experiment-scroll-hint { display: none; margin: 0 0 8px; color: #84938b; font-size: 11px; }
+    .experiment-table-wrap, .experiment-metric-table-wrap { overflow: auto; border: 1px solid #e8eeea; border-radius: 10px; scrollbar-color: #a9beb2 #f1f5f2; scrollbar-width: thin; }
+    .experiment-table { min-width: 830px; table-layout: fixed; }
+    .experiment-table th { padding: 12px 14px; background: #f7faf8; white-space: nowrap; }
+    .experiment-table td { padding: 14px; line-height: 1.45; }
+    .experiment-table tbody tr { transition: background .15s ease; }
+    .experiment-table tbody tr:hover { background: #f8fbf9; }
+    .experiment-table th:nth-child(1) { width: 21%; }
+    .experiment-table th:nth-child(2) { width: 15%; }
+    .experiment-table th:nth-child(3), .experiment-table th:nth-child(4) { width: 17%; }
+    .experiment-table th:nth-child(5) { width: 19%; }
+    .experiment-table th:nth-child(6) { width: 11%; }
+    .experiment-duration { color: #204b3d; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .experiment-unit { color: #829087; font-size: 10px; }
+    .experiment-detail-link { white-space: nowrap; }
+    .experiment-pass-badge { background: #e9f5ef; color: #287352; }
+    .experiment-fail-badge { background: #fff0ed; color: #a94236; }
+    .experiment-empty-state { display: grid; justify-items: center; gap: 9px; border: 1px dashed #dce6df; border-radius: 10px; padding: 44px 20px; background: #fbfdfb; text-align: center; }
+    .experiment-empty-state strong { color: #315547; font: 700 16px Manrope, sans-serif; }
+    .experiment-empty-state p { max-width: 440px; margin: 0 0 7px; color: #83928b; font-size: 12px; line-height: 1.6; }
+    .experiment-empty-state form { margin: 0; }
+    .experiment-empty-icon { display: grid; width: 40px; height: 40px; place-items: center; margin-bottom: 3px; border-radius: 50%; background: #eaf5ee; color: #287352; font: 800 20px ui-monospace, monospace; }
+    .experiment-metrics-card { margin-bottom: 18px; }
+    .experiment-section-heading { align-items: flex-start; margin-bottom: 17px; }
+    .experiment-section-heading .eyebrow { margin-bottom: 6px; }
+    .experiment-section-heading .badge { margin-top: 3px; }
+    .experiment-total-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .experiment-total-card { min-width: 0; border: 1px solid #e7eeea; border-radius: 10px; padding: 15px; background: #fbfdfb; }
+    .experiment-total-card > span { color: #74847d; font-size: 11px; font-weight: 600; }
+    .experiment-total-card strong { display: block; margin: 9px 0 5px; color: #204b3d; font: 800 23px Manrope, sans-serif; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .experiment-total-card strong small { color: #60766a; font: 600 11px 'DM Sans', sans-serif; }
+    .experiment-total-card p { margin: 0; color: #8a9891; font-size: 10px; line-height: 1.5; }
+    .experiment-hybrid-total { border-color: #cfe5d6; background: #f4faf5; }
+    .experiment-metric-table { min-width: 640px; }
+    .experiment-metric-table th { position: sticky; top: 0; z-index: 1; padding: 12px; background: #f3f7f4; white-space: nowrap; }
+    .experiment-metric-table td { padding: 12px; }
+    .experiment-metric-table tbody tr:nth-child(even) { background: #fafcfb; }
+    .experiment-metric-table tbody tr:hover { background: #f1f7f3; }
+    .experiment-metric-table td:not(:first-child) { font-variant-numeric: tabular-nums; }
+    .experiment-total-row td { border-top: 1px solid #dce7df; color: #204b3d; font-weight: 800; }
+    .experiment-validation-grid { gap: 14px; }
+    .experiment-validation-card { min-width: 0; padding: 18px; }
+    .experiment-validation-heading { display: flex; align-items: flex-start; gap: 12px; }
+    .experiment-validation-heading h2 { margin: 0 0 5px; font-size: 16px; }
+    .experiment-validation-heading .subtitle { font-size: 11px; }
+    .experiment-validation-icon { display: grid; flex: 0 0 36px; width: 36px; height: 36px; place-items: center; border-radius: 10px; background: #eaf5ee; color: #287352; font-size: 19px; font-weight: 700; }
+    .experiment-integrity-icon { background: #eef4f7; color: #426b83; }
+    .experiment-validation-results { display: grid; gap: 9px; margin-top: 18px; }
+    .experiment-validation-result { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #edf1ee; padding-top: 10px; color: #607269; font-size: 11px; }
+    .experiment-integrity-result { margin-top: 18px; border-top: 1px solid #edf1ee; padding-top: 14px; }
+
+    @media (max-width: 980px) {
+        .experiment-scroll-hint { display: block; }
+    }
+
+    @media (max-width: 640px) {
+        .experiment-heading { align-items: stretch; }
+        .experiment-heading > form, .experiment-heading > form .button { width: 100%; }
+        .experiment-list-heading { align-items: flex-start; }
+        .experiment-section-heading { flex-direction: column; }
+        .experiment-section-heading .badge { align-self: flex-start; }
+        .experiment-total-grid { grid-template-columns: 1fr; }
+    }

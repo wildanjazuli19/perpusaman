@@ -167,9 +167,19 @@ class MemberCryptographyTest extends TestCase
         $this->assertTrue($experiment->metrics['baseline_roundtrip_matches']);
         $this->assertTrue($experiment->metrics['tampering_rejected']);
 
+        $this->get(route('experiments.index'))
+            ->assertOk()
+            ->assertSee('experiment-table-wrap')
+            ->assertSee('Riwayat pengujian')
+            ->assertSee('Lihat hasil')
+            ->assertSee('Perubahan ditolak');
+
         $this->actingAs($user)
             ->get(route('experiments.show', $experiment))
             ->assertOk()
-            ->assertSee('Metrik kinerja dan penyimpanan');
+            ->assertSee('experiment-total-grid')
+            ->assertSee('Metrik kinerja dan penyimpanan')
+            ->assertSee('experiment-validation-grid')
+            ->assertSee('Perubahan terdeteksi dan ditolak');
     }
 }
