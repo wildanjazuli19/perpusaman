@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\BookReturn;
-use App\Models\Category;
 use App\Models\Loan;
 use App\Models\Member;
 use App\Services\MemberCryptography;
-use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -72,6 +71,34 @@ class ReportController extends Controller
         ]);
     }
 
+    public function pdf(Request $request, MemberCryptography $cryptography): Response
+    {
+        $filters = $request->validate([
+            'type' => ['required', 'in:members,books,loans,returns'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+        ]);
+
+        [$title, $headers, $rows] = $this->buildReport(
+            $filters['type'],
+            $filters['start_date'] ?? null,
+            $filters['end_date'] ?? null,
+            $cryptography
+        );
+
+        $filename = 'laporan-'.str_replace(' ', '-', strtolower($title)).'-'.now()->format('Ymd-His').'.pdf';
+
+        return Pdf::loadView('reports.pdf', [
+            'title' => $title,
+            'headers' => $headers,
+            'rows' => $rows,
+            'startDate' => $filters['start_date'] ?? '',
+            'endDate' => $filters['end_date'] ?? '',
+        ])
+            ->setPaper('a4', 'landscape')
+            ->download($filename);
+    }
+
     public function export(Request $request, MemberCryptography $cryptography): StreamedResponse
     {
         $filters = $request->validate([
@@ -90,19 +117,45 @@ class ReportController extends Controller
         $filename = 'laporan-'.str_replace(' ', '-', strtolower($title)).'-'.now()->format('Ymd-His').'.csv';
 
         return response()->streamDownload(function () use ($headers, $rows) {
-            $output = fopen('php://output', 'w');
-            // BOM agar karakter UTF-8 terbaca baik oleh Microsoft Excel.
-            fwrite($output, "\xEF\xBB\xBF");
-            fputcsv($output, $headers, ';');
+            $output = fopen('php://output', 'wb');
 
-            foreach ($rows as $row) {
-                fputcsv($output, array_values($row), ';');
+            if ($output === false) {
+                throw new \RuntimeException('File export CSV tidak dapat dibuat.');
             }
 
-            fclose($output);
+            try {
+                // UTF-8 BOM and semicolon delimiter improve compatibility with Excel regional settings.
+                fwrite($output, "\xEF\xBB\xBF");
+                fputcsv($output, $headers, ';', '"', '', "\r\n");
+
+                foreach ($rows as $row) {
+                    fputcsv($output, $this->spreadsheetSafeRow(array_values($row)), ';', '"', '', "\r\n");
+                }
+            } finally {
+                fclose($output);
+            }
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
+            'Cache-Control' => 'private, no-store',
+            'X-Content-Type-Options' => 'nosniff',
         ]);
+    }
+
+    /**
+     * Prefix formula-like text cells so spreadsheet applications treat them as text.
+     *
+     * @param  array<int, mixed>  $row
+     * @return array<int, mixed>
+     */
+    private function spreadsheetSafeRow(array $row): array
+    {
+        return array_map(static function (mixed $value): mixed {
+            if (is_string($value) && preg_match('/^[\x00-\x20]*[=+\-@]/', $value) === 1) {
+                return "'".$value;
+            }
+
+            return $value;
+        }, $row);
     }
 
     /**
@@ -222,7 +275,7 @@ class ReportController extends Controller
     }
 
     /** @param iterable<Member> $records
-     *  @return array<int,string>
+     * @return array<int,string>
      */
     private function memberNames(iterable $records, MemberCryptography $cryptography): array
     {

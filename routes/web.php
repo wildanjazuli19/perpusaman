@@ -1,16 +1,16 @@
 
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ExperimentController;
-use App\Http\Controllers\MemberController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExperimentController;
 use App\Http\Controllers\LoanController;
-use App\Http\Controllers\ReturnController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\ReturnController;
 use App\Http\Middleware\RecordActivity;
 use Illuminate\Support\Facades\Route;
 
@@ -96,6 +96,9 @@ Route::middleware(['auth', RecordActivity::class])->group(function () {
 
     Route::get('/reports/print', [ReportController::class, 'print'])
         ->name('reports.print');
+
+    Route::get('/reports/pdf', [ReportController::class, 'pdf'])
+        ->name('reports.pdf');
 
     // Audit Aktivitas
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])
