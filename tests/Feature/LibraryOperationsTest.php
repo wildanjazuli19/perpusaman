@@ -122,6 +122,58 @@ class LibraryOperationsTest extends TestCase
         $this->assertDatabaseMissing('books', ['title' => 'Stok Tidak Valid']);
     }
 
+    public function test_book_edit_screen_shows_stock_summary_and_preserves_borrowed_stock(): void
+    {
+        $user = User::factory()->create();
+        $book = $this->book($this->category(), 5);
+        $book->update(['stock_available' => 3]);
+
+        $this->actingAs($user)->get(route('books.edit', $book))
+            ->assertOk()
+            ->assertSee('book-stock-summary')
+            ->assertSee('Total eksemplar')
+            ->assertSee('Sedang dipinjam')
+            ->assertSee('book-edit-card')
+            ->assertSee('book-back-link')
+            ->assertSee('Kembali ke katalog')
+            ->assertSee('Jumlah yang sedang dipinjam tidak dapat dihapus dari total stok.');
+
+        $this->put(route('books.update', $book), [
+            'category_id' => $book->category_id,
+            'isbn' => $book->isbn,
+            'title' => $book->title,
+            'author' => $book->author,
+            'publisher' => $book->publisher,
+            'publication_year' => $book->publication_year,
+            'stock_total' => 6,
+            'shelf_location' => $book->shelf_location,
+            'description' => $book->description,
+        ])->assertRedirect(route('books.index'));
+
+        $this->assertSame(6, $book->fresh()->stock_total);
+        $this->assertSame(4, $book->fresh()->stock_available);
+
+        $this->from(route('books.edit', $book))
+            ->put(route('books.update', $book), [
+                'category_id' => $book->category_id,
+                'isbn' => $book->isbn,
+                'title' => $book->title,
+                'author' => $book->author,
+                'publisher' => $book->publisher,
+                'publication_year' => $book->publication_year,
+                'stock_total' => 1,
+                'shelf_location' => $book->shelf_location,
+                'description' => $book->description,
+            ])
+            ->assertRedirect(route('books.edit', $book))
+            ->assertSessionHasErrors('stock_total');
+
+        $this->get(route('books.edit', $book))
+            ->assertOk()
+            ->assertSee('Perubahan belum dapat disimpan.')
+            ->assertSee('Stok total tidak boleh kurang dari jumlah buku yang sedang dipinjam (2).');
+    }
+
     public function test_loan_reduces_available_stock_and_records_transaction(): void
     {
         $user = User::factory()->create();

@@ -642,3 +642,43 @@ body:has(.sidebar-layout) {
         .experiment-section-heading .badge { align-self: flex-start; }
         .experiment-total-grid { grid-template-columns: 1fr; }
     }
+
+    /* Book catalog edit form */
+    .book-edit-heading { align-items: center; }
+    .book-edit-heading .subtitle strong { color: #40584f; font-weight: 700; }
+    .book-stock-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: -5px 0 17px; }
+    .book-stock-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #e3eae5; border-radius: 11px; padding: 14px 16px; background: #fff; box-shadow: 0 5px 20px rgb(20 50 39 / 3%); }
+    .book-stock-item span { color: #74847d; font-size: 11px; font-weight: 600; }
+    .book-stock-item strong { color: #204b3d; font: 800 20px Manrope, sans-serif; font-variant-numeric: tabular-nums; }
+    .book-stock-item:nth-child(2) { border-color: #cfe5d6; background: #f4faf5; }
+    .book-stock-item:nth-child(3) { border-color: #efe2c4; background: #fffaf0; }
+    .book-edit-card { width: 100%; max-width: none; }
+    .book-back-link { flex: 0 0 auto; gap: 9px; border-color: #dce6df; padding-inline: 14px; color: #305f50; font-size: 12px; white-space: nowrap; }
+    .book-back-link > span:first-child { display: grid; width: 23px; height: 23px; place-items: center; border-radius: 7px; background: #edf5f0; color: #287352; font-size: 16px; line-height: 1; transition: transform .15s ease; }
+    .book-back-link:hover > span:first-child { transform: translateX(-2px); }
+    .book-edit-form-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .book-edit-form-heading h2 { margin: 0 0 4px; font-size: 17px; }
+    .book-edit-form-heading p { margin: 0; color: #83928b; font-size: 12px; }
+    .book-edit-form-heading p span { color: #b54037; font-weight: 700; }
+    .book-edit-icon { display: grid; flex: 0 0 40px; width: 40px; height: 40px; place-items: center; border-radius: 11px; background: #eaf5ee; color: #287352; font-size: 20px; }
+    .book-form-grid { gap: 18px 16px; }
+    .book-form-grid .field label > span[aria-hidden="true"] { color: #b54037; }
+    .book-form-grid .field input, .book-form-grid .field select, .book-form-grid .field textarea { width: 100%; border: 1px solid #dce6df; border-radius: 8px; padding: 0 12px; color: #243e35; background: #fff; outline: none; font: inherit; font-size: 13px; transition: border-color .15s ease, box-shadow .15s ease; }
+    .book-form-grid .field input, .book-form-grid .field select { min-height: 43px; }
+    .book-form-grid .field textarea { min-height: 100px; padding-block: 10px; resize: vertical; line-height: 1.5; }
+    .book-form-grid .field input:focus, .book-form-grid .field select:focus, .book-form-grid .field textarea:focus { border-color: #61a087; box-shadow: 0 0 0 3px rgb(67 141 108 / 12%); }
+    .book-form-grid .field [aria-invalid="true"] { border-color: #d7786d; }
+    .book-field-optional { margin-left: 5px; color: #8a9891; font-size: 10px; font-weight: 500; }
+    .book-form-help { margin: 14px 0 0; line-height: 1.6; }
+    .book-stock-note { display: flex; align-items: flex-start; gap: 10px; margin-top: 18px; border: 1px solid #efe2c4; border-radius: 9px; padding: 12px 14px; background: #fffaf0; color: #806a36; font-size: 11px; line-height: 1.6; }
+    .book-stock-note > span { display: grid; flex: 0 0 18px; width: 18px; height: 18px; place-items: center; margin-top: 1px; border-radius: 50%; background: #f7edcf; color: #80651f; font-size: 11px; font-weight: 800; }
+    .book-edit-actions { justify-content: flex-end; margin-bottom: 0; }
+
+    @media (max-width: 640px) {
+        .book-edit-heading { align-items: stretch; }
+        .book-edit-heading > .book-back-link { width: fit-content; }
+        .book-stock-summary { grid-template-columns: 1fr; gap: 8px; margin-top: 0; }
+        .book-stock-item { padding: 12px 14px; }
+        .book-edit-actions { flex-direction: column-reverse; align-items: stretch; }
+        .book-edit-actions .button { width: 100%; }
+    }
