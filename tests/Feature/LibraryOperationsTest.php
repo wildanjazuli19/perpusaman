@@ -128,6 +128,12 @@ class LibraryOperationsTest extends TestCase
         $book = $this->book($this->category(), 5);
         $member = $this->member();
 
+        $this->actingAs($user)->get(route('loans.create'))
+            ->assertOk()
+            ->assertSee('circulation-form-grid')
+            ->assertSee('Tanggal jatuh tempo')
+            ->assertSee('Stok tersedia akan berkurang');
+
         $this->actingAs($user)->post(route('loans.store'), [
             'member_id' => $member->id,
             'book_id' => $book->id,
@@ -144,6 +150,12 @@ class LibraryOperationsTest extends TestCase
             'status' => 'borrowed',
         ]);
         $this->assertDatabaseHas('activity_logs', ['route_name' => 'loans.store']);
+        $this->get(route('loans.index'))
+            ->assertOk()
+            ->assertSee('circulation-table-wrap')
+            ->assertSee('Menampilkan 1–1 dari 1 transaksi')
+            ->assertSee('Proses kembali')
+            ->assertSee('Lihat riwayat pengembalian');
     }
 
     public function test_loan_cannot_exceed_available_stock(): void
@@ -183,6 +195,13 @@ class LibraryOperationsTest extends TestCase
             'status' => 'borrowed',
         ]);
 
+        $this->actingAs($user)->get(route('loans.returns.create', $loan))
+            ->assertOk()
+            ->assertSee('circulation-return-summary')
+            ->assertSee('Progres pengembalian')
+            ->assertSee('Sisa pengembalian')
+            ->assertSee('Buku rusak tetap dicatat telah kembali');
+
         $this->actingAs($user)->post(route('loans.returns.store', $loan), [
             'quantity' => 1,
             'book_condition' => 'good',
@@ -196,6 +215,12 @@ class LibraryOperationsTest extends TestCase
             'quantity' => 1,
             'book_condition' => 'good',
         ]);
+        $this->get(route('returns.index'))
+            ->assertOk()
+            ->assertSee('circulation-table-wrap')
+            ->assertSee('RET-')
+            ->assertSee('Buku Pengujian')
+            ->assertSee('Riwayat tersimpan');
     }
 
     public function test_damaged_return_is_recorded_without_restoring_available_stock(): void

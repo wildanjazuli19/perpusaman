@@ -471,3 +471,99 @@ body:has(.sidebar-layout) {
         visibility: visible;
     }
 }
+
+    /* Loan and return screens */
+    .circulation-heading { align-items: center; }
+    .circulation-card { overflow: hidden; }
+    .circulation-list-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 17px; }
+    .circulation-list-heading h2 { margin: 0 0 5px; font-size: 17px; }
+    .circulation-list-heading p { margin: 0; color: #83928b; font-size: 12px; }
+    .circulation-history-link { color: #176e57; font-size: 12px; font-weight: 700; }
+    .circulation-history-link span { margin-left: 4px; }
+    .circulation-history-label { border: 1px solid #e3ebe6; border-radius: 99px; padding: 7px 10px; background: #f7faf8; color: #658074; font-size: 10px; font-weight: 700; white-space: nowrap; }
+    .circulation-scroll-hint { display: none; margin: 0 0 8px; color: #84938b; font-size: 11px; }
+    .circulation-table-wrap { overflow-x: auto; border: 1px solid #e8eeea; border-radius: 10px; scrollbar-color: #a9beb2 #f1f5f2; scrollbar-width: thin; }
+    .circulation-table { min-width: 1030px; table-layout: fixed; }
+    .circulation-table th { padding: 12px 13px; background: #f7faf8; white-space: nowrap; }
+    .circulation-table td { padding: 14px 13px; line-height: 1.45; overflow-wrap: anywhere; }
+    .circulation-table tbody tr { transition: background .15s ease; }
+    .circulation-table tbody tr:hover { background: #f8fbf9; }
+    .loan-table th:nth-child(1) { width: 15%; }
+    .loan-table th:nth-child(2) { width: 17%; }
+    .loan-table th:nth-child(3) { width: 20%; }
+    .loan-table th:nth-child(4), .loan-table th:nth-child(5) { width: 12%; }
+    .loan-table th:nth-child(6) { width: 14%; }
+    .loan-table th:nth-child(7) { width: 10%; }
+    .return-table { min-width: 1040px; }
+    .return-table th:nth-child(1) { width: 18%; }
+    .return-table th:nth-child(2) { width: 17%; }
+    .return-table th:nth-child(3) { width: 20%; }
+    .return-table th:nth-child(4) { width: 10%; }
+    .return-table th:nth-child(5) { width: 11%; }
+    .return-table th:nth-child(6) { width: 12%; }
+    .return-table th:nth-child(7) { width: 12%; }
+    .circulation-active-badge { background: #e9f5ef; color: #287352; }
+    .circulation-partial-badge { background: #fff6df; color: #88651b; }
+    .circulation-overdue-badge { background: #fff0ed; color: #a94236; }
+    .circulation-overdue-date { color: #a94236; font-weight: 700; }
+    .circulation-overdue-note { color: #a94236; }
+    .circulation-action { min-height: 32px; padding: 0 9px; font-size: 10px; white-space: nowrap; }
+    .circulation-completed { color: #7d8b84; font-size: 11px; white-space: nowrap; }
+    .circulation-quantity { color: #204b3d; font-weight: 800; }
+    .circulation-empty-state { display: grid; justify-items: center; gap: 9px; border: 1px dashed #dce6df; border-radius: 10px; padding: 44px 20px; background: #fbfdfb; text-align: center; }
+    .circulation-empty-state strong { color: #315547; font: 700 16px Manrope, sans-serif; }
+    .circulation-empty-state p { margin: 0 0 7px; color: #83928b; font-size: 12px; line-height: 1.6; }
+    .circulation-empty-icon { display: grid; width: 40px; height: 40px; place-items: center; margin-bottom: 3px; border-radius: 50%; background: #eaf5ee; color: #287352; font-size: 22px; font-weight: 700; }
+    .circulation-form-card, .circulation-return-card { max-width: 900px; }
+    .circulation-form-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .circulation-form-heading h2 { margin: 0 0 4px; font-size: 17px; }
+    .circulation-form-heading p { margin: 0; color: #83928b; font-size: 12px; }
+    .circulation-form-heading p span { color: #b54037; font-weight: 700; }
+    .circulation-form-icon { display: grid; flex: 0 0 40px; width: 40px; height: 40px; place-items: center; border-radius: 11px; background: #eaf5ee; color: #287352; font-size: 23px; font-weight: 600; }
+    .circulation-form-grid { gap: 19px 16px; }
+    .circulation-form-grid .field select, .circulation-form-grid .field textarea { width: 100%; border: 1px solid #dce6df; border-radius: 8px; padding: 10px 12px; color: #243e35; background: #fff; outline: none; font: inherit; font-size: 13px; }
+    .circulation-form-grid .field select { min-height: 43px; padding-block: 0; }
+    .circulation-form-grid .field textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
+    .circulation-form-grid .field select:focus, .circulation-form-grid .field textarea:focus { border-color: #61a087; box-shadow: 0 0 0 3px rgb(67 141 108 / 12%); }
+    .circulation-form-grid .field label span[aria-hidden="true"] { color: #b54037; }
+    .field-hint { color: #8a9891; font-size: 10px; }
+    .field-optional { margin-left: 5px; color: #8a9891; font-size: 10px; font-weight: 500; }
+    .circulation-form-note { display: flex; align-items: flex-start; gap: 10px; margin-top: 20px; border: 1px solid #dceae3; border-radius: 9px; padding: 12px 14px; background: #f5faf7; color: #547064; font-size: 11px; line-height: 1.6; }
+    .circulation-form-note > span { display: grid; flex: 0 0 18px; width: 18px; height: 18px; place-items: center; margin-top: 1px; border-radius: 50%; background: #deeee4; color: #287352; font-size: 11px; font-weight: 800; }
+    .circulation-form-actions { justify-content: flex-end; margin-bottom: 0; }
+    .circulation-return-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+    .circulation-return-heading .eyebrow { margin-bottom: 6px; }
+    .circulation-return-heading h2 { margin-bottom: 5px; font-size: 19px; }
+    .circulation-return-heading p { margin: 0; color: #74847d; font-size: 12px; line-height: 1.6; }
+    .circulation-return-heading > .badge { margin-top: 4px; }
+    .circulation-return-progress { margin: 22px 0 17px; }
+    .circulation-progress-heading { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; color: #74847d; font-size: 11px; }
+    .circulation-progress-heading strong { color: #315547; font-weight: 700; }
+    .circulation-progress-track { overflow: hidden; height: 8px; border-radius: 99px; background: #edf2ee; }
+    .circulation-progress-track span { display: block; height: 100%; border-radius: inherit; background: #44a36d; transition: width .2s ease; }
+    .circulation-return-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .circulation-return-stat { min-width: 0; border: 1px solid #e7eeea; border-radius: 9px; padding: 13px; background: #fbfdfb; }
+    .circulation-return-stat > span { color: #74847d; font-size: 10px; font-weight: 600; }
+    .circulation-return-stat strong { display: block; margin-top: 8px; color: #204b3d; font: 800 17px Manrope, sans-serif; overflow-wrap: anywhere; }
+    .circulation-return-stat strong small { color: #60766a; font: 600 10px 'DM Sans', sans-serif; }
+    .circulation-remaining-stat { border-color: #cfe5d6; background: #f4faf5; }
+    .circulation-form-divider { height: 1px; margin: 23px 0; background: #edf1ee; }
+    .circulation-return-icon { background: #eef4f7; color: #426b83; }
+    .circulation-damage-note { border-color: #efe2c4; background: #fffaf0; color: #806a36; }
+    .circulation-damage-note > span { background: #f7edcf; color: #80651f; }
+
+    @media (max-width: 980px) {
+        .circulation-scroll-hint { display: block; }
+    }
+
+    @media (max-width: 640px) {
+        .circulation-heading { align-items: stretch; }
+        .circulation-heading > .button { width: 100%; }
+        .circulation-list-heading { align-items: flex-start; flex-direction: column; }
+        .circulation-history-label { align-self: flex-start; }
+        .circulation-return-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .circulation-return-heading { flex-direction: column; }
+        .circulation-form-actions { flex-direction: column-reverse; align-items: stretch; }
+        .circulation-form-actions .button { width: 100%; }
+        .circulation-progress-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+    }
