@@ -77,6 +77,15 @@ class LibraryOperationsTest extends TestCase
 
         $book = Book::query()->where('title', 'Dasar Pengujian')->sole();
         $this->assertSame(4, $book->stock_available);
+        $this->get(route('books.index'))
+            ->assertOk()
+            ->assertSee('catalog-table-wrap')
+            ->assertSee('catalog-table')
+            ->assertSee('Menampilkan 1–1 dari 1 buku')
+            ->assertSee('Dasar Pengujian')
+            ->assertSee('4 tersedia')
+            ->assertSee('Lokasi rak');
+
         $this->get(route('categories.index'))
             ->assertOk()
             ->assertSee('category-layout')

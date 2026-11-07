@@ -58,6 +58,39 @@ tbody tr:last-child td { border-bottom: 0; }
 .table-muted { margin-top: 4px; color: #94a098; font-size: 11px; }
 .badge { display: inline-flex; align-items: center; border-radius: 99px; padding: 5px 9px; background: #e9f5ef; color: #287352; font-size: 10px; font-weight: 700; white-space: nowrap; }
 .badge-muted { background: #eef1f0; color: #64766e; }
+.catalog-card { overflow: hidden; }
+.catalog-filter { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(170px, 240px) auto auto; align-items: center; gap: 10px; padding-bottom: 20px; border-bottom: 1px solid #edf1ee; }
+.catalog-filter input, .catalog-filter select { width: 100%; min-height: 42px; border: 1px solid #dce6df; border-radius: 8px; padding: 0 12px; color: #243e35; background: #fff; outline: none; font: inherit; font-size: 13px; }
+.catalog-filter input:focus, .catalog-filter select:focus, .catalog-table-wrap:focus-visible { border-color: #61a087; box-shadow: 0 0 0 3px rgb(67 141 108 / 12%); }
+.catalog-reset { padding: 8px 3px; color: #176e57; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.catalog-table-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0 12px; }
+.catalog-table-heading h2 { margin: 0 0 4px; font-size: 17px; }
+.catalog-table-heading p { margin: 0; color: #83928b; font-size: 12px; }
+.catalog-scroll-hint { display: none; }
+.catalog-table-wrap { border: 1px solid #e8eeea; border-radius: 10px; scrollbar-color: #a9beb2 #f1f5f2; scrollbar-width: thin; }
+.catalog-table { min-width: 930px; table-layout: fixed; }
+.catalog-table th { padding: 12px 14px; background: #f7faf8; white-space: nowrap; }
+.catalog-table td { padding: 15px 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.catalog-table tbody tr { transition: background .15s ease; }
+.catalog-table tbody tr:hover { background: #f7faf8; }
+.catalog-table th:nth-child(1) { width: 27%; }
+.catalog-table th:nth-child(2) { width: 15%; }
+.catalog-table th:nth-child(3) { width: 18%; }
+.catalog-table th:nth-child(4) { width: 15%; }
+.catalog-table th:nth-child(5) { width: 14%; }
+.catalog-table th:nth-child(6) { width: 11%; }
+.catalog-category { display: inline-flex; border-radius: 6px; padding: 5px 8px; background: #f0f5f2; color: #456b5c; font-size: 11px; font-weight: 700; }
+.catalog-shelf { color: #50665c; font-size: 12px; }
+.catalog-actions { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.catalog-actions form { margin: 0; }
+.catalog-actions .link-button { padding: 6px 0; font-size: 11px; }
+.catalog-actions .danger-link { color: #ad4237; }
+.catalog-empty-state { display: grid; justify-items: center; gap: 9px; padding: 44px 20px; border: 1px dashed #dce6df; border-radius: 10px; background: #fbfdfb; color: #83928b; text-align: center; font-size: 13px; }
+.catalog-empty-state strong { color: #315547; font: 700 16px Manrope, sans-serif; }
+.catalog-empty-state div { margin-top: 8px; }
+@media (max-width: 980px) {
+    .catalog-scroll-hint { display: block; margin: 0 0 8px; color: #84938b; font-size: 11px; }
+}
 .alert { margin-bottom: 20px; border-radius: 9px; padding: 12px 15px; font-size: 13px; line-height: 1.5; }
 .alert-success { border: 1px solid #cce8d7; background: #effaf3; color: #256543; }
 .alert-danger { border: 1px solid #f0d1cd; background: #fff5f3; color: #a33b31; }
@@ -134,6 +167,12 @@ tbody tr:last-child td { border-bottom: 0; }
     .stat-card { padding: 15px 18px; }
     .stat-value { margin: 7px 0 2px; font-size: 24px; }
     .dashboard-grid, .detail-grid, .result-grid { grid-template-columns: 1fr; }
+    .catalog-filter { grid-template-columns: minmax(0, 1fr) auto; }
+    .catalog-filter input { grid-column: 1 / -1; }
+    .catalog-filter select { grid-column: 1; }
+    .catalog-filter .button { grid-column: 2; }
+    .catalog-table-heading { padding-top: 17px; }
+    .catalog-table { min-width: 880px; }
     .category-layout { grid-template-columns: 1fr; }
     .category-item { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 12px; }
     .category-item .category-edit-form { grid-template-columns: 1fr; }
