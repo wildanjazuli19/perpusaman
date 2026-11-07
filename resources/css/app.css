@@ -287,7 +287,42 @@ tbody tr:last-child td { border-bottom: 0; }
     .catalog-table-heading { padding-top: 17px; }
     .catalog-table { min-width: 880px; }
     .category-layout { grid-template-columns: 1fr; }
-    .category-item { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 13px; }
+    .category-item { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 13px;     }
+
+    /* Dashboard summary cards */
+    .summary-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 0 0 13px; }
+    .summary-section-heading h2 { margin: 0 0 4px; font-size: 17px; }
+    .summary-section-heading p { margin: 0; color: #83928b; font-size: 11px; }
+    .summary-live-label { display: inline-flex; align-items: center; gap: 7px; border: 1px solid #dcebe1; border-radius: 99px; padding: 7px 10px; background: #f3faf5; color: #47735a; font-size: 10px; font-weight: 700; white-space: nowrap; }
+    .summary-live-label > span { width: 7px; height: 7px; border-radius: 50%; background: #45a56c; box-shadow: 0 0 0 3px rgb(69 165 108 / 12%); }
+    .dashboard-summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin-bottom: 24px; }
+    .summary-card { display: block; min-width: 0; border-radius: 12px; padding: 16px 18px; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+    .summary-card:hover { transform: translateY(-2px); border-color: #cddfd3; box-shadow: 0 9px 22px rgb(20 50 39 / 7%); }
+    .summary-card:focus-visible { outline: 3px solid rgb(67 141 108 / 30%); outline-offset: 2px; }
+    .summary-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .summary-card-top .stat-label { color: #718179; font-size: 11px; }
+    .summary-card-icon { display: grid; flex: 0 0 32px; width: 32px; height: 32px; place-items: center; border-radius: 9px; background: #edf5f0; color: #33714d; font: 800 13px Manrope, sans-serif; }
+    .summary-books-icon { background: #eef3f8; color: #4a6d8b; }
+    .summary-stock-icon { background: #eff7ee; color: #50814d; font-size: 20px; }
+    .summary-loans-icon { background: #f1eff9; color: #6d5f98; font-size: 17px; }
+    .summary-overdue-icon { background: #fff3e4; color: #a76c19; font-size: 16px; }
+    .summary-returns-icon { background: #edf4f6; color: #4c7887; font-size: 17px; }
+    .summary-card .stat-value { margin: 11px 0 10px; color: #153b34; font-size: clamp(24px, 2.4vw, 30px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .summary-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid #f0f3f1; padding-top: 10px; color: #85938c; font-size: 10px; line-height: 1.4; }
+    .summary-card-arrow { flex: 0 0 auto; color: #6f9a82; font-size: 14px; transition: transform .15s ease; }
+    .summary-card:hover .summary-card-arrow { transform: translateX(3px); }
+    .summary-card-warning { border-color: #f0dfc7; background: #fffdfa; }
+    .summary-card-warning .stat-value { color: #a94236; }
+    .summary-card-warning .summary-card-footer { border-color: #f5eadc; }
+
+    @media (max-width: 980px) {
+        .dashboard-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 380px) {
+        .dashboard-summary-grid { grid-template-columns: 1fr; }
+        .summary-section-heading { align-items: flex-start; }
+    }
     .category-item .category-edit-form { grid-template-columns: 1fr; gap: 11px; }
     .category-edit-actions { grid-column: auto; }
     .category-delete-form { align-items: center; flex-direction: row; justify-content: space-between; border-top: 1px solid #edf1ee; border-left: 0; padding: 11px 0 0; }

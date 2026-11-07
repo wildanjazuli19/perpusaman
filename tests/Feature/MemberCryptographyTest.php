@@ -151,6 +151,11 @@ class MemberCryptographyTest extends TestCase
             ->get(route('dashboard'))
             ->assertOk()
             ->assertSee('Dashboard Perpustakaan')
+            ->assertSee('Ringkasan perpustakaan')
+            ->assertSee('dashboard-summary-grid')
+            ->assertSee(route('members.index'))
+            ->assertSee(route('loans.index'))
+            ->assertSee('Stok tersedia')
             ->assertSee('Keamanan & eksperimen', false)
             ->assertSee('ML-KEM-768');
     }
