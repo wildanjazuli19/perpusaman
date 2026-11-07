@@ -88,8 +88,36 @@ tbody tr:last-child td { border-bottom: 0; }
 .catalog-empty-state { display: grid; justify-items: center; gap: 9px; padding: 44px 20px; border: 1px dashed #dce6df; border-radius: 10px; background: #fbfdfb; color: #83928b; text-align: center; font-size: 13px; }
 .catalog-empty-state strong { color: #315547; font: 700 16px Manrope, sans-serif; }
 .catalog-empty-state div { margin-top: 8px; }
+.report-filter-card { margin-bottom: 18px; }
+.report-filter-card .section-title { margin-bottom: 16px; }
+.report-filter-form { display: grid; grid-template-columns: minmax(210px, 1.15fr) minmax(150px, .8fr) minmax(150px, .8fr) auto; align-items: end; gap: 14px; }
+.report-filter-form .field select, .report-filter-form .field input { width: 100%; min-height: 43px; border: 1px solid #dce6df; border-radius: 8px; padding: 0 12px; color: #243e35; background: #fff; outline: none; font: inherit; font-size: 13px; }
+.report-filter-form .field select:focus, .report-filter-form .field input:focus { border-color: #61a087; box-shadow: 0 0 0 3px rgb(67 141 108 / 12%); }
+.report-filter-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.report-filter-actions .button { white-space: nowrap; }
+.report-results { min-width: 0; }
+.report-title-row { align-items: center; margin-bottom: 16px; }
+.report-title-row h2 { margin-bottom: 5px; }
+.report-title-row p { display: flex; flex-wrap: wrap; gap: 5px 12px; line-height: 1.5; }
+.report-period { color: #718179; }
+.report-export-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.report-export-actions .button { min-height: 38px; padding-inline: 12px; font-size: 12px; white-space: nowrap; }
+.report-scroll-hint { display: none; margin: 0 0 8px; color: #84938b; font-size: 11px; }
+.report-table-wrap { max-height: min(68vh, 720px); overflow: auto; border: 1px solid #e8eeea; border-radius: 10px; scrollbar-color: #a9beb2 #f1f5f2; scrollbar-width: thin; }
+.report-table { min-width: 900px; table-layout: auto; }
+.report-table th { position: sticky; top: 0; z-index: 1; padding: 12px; background: #f3f7f4; white-space: nowrap; }
+.report-table td { max-width: 300px; padding: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.report-table tbody tr:nth-child(even) { background: #fafcfb; }
+.report-table tbody tr:hover { background: #f1f7f3; }
+.report-empty-state { display: grid; justify-items: center; gap: 7px; padding: 42px 18px; border: 1px dashed #dce6df; border-radius: 10px; background: #fbfdfb; text-align: center; }
+.report-empty-state strong { color: #315547; font: 700 16px Manrope, sans-serif; }
+.report-empty-state p { margin: 0; color: #83928b; font-size: 12px; line-height: 1.6; }
+.report-empty-icon { display: grid; width: 38px; height: 38px; place-items: center; margin-bottom: 4px; border-radius: 50%; background: #eef4f0; color: #658174; font-size: 20px; }
 @media (max-width: 980px) {
     .catalog-scroll-hint { display: block; margin: 0 0 8px; color: #84938b; font-size: 11px; }
+    .report-filter-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .report-filter-actions { grid-column: 1 / -1; }
+    .report-scroll-hint { display: block; }
 }
 .alert { margin-bottom: 20px; border-radius: 9px; padding: 12px 15px; font-size: 13px; line-height: 1.5; }
 .alert-success { border: 1px solid #cce8d7; background: #effaf3; color: #256543; }
@@ -167,6 +195,13 @@ tbody tr:last-child td { border-bottom: 0; }
     .stat-card { padding: 15px 18px; }
     .stat-value { margin: 7px 0 2px; font-size: 24px; }
     .dashboard-grid, .detail-grid, .result-grid { grid-template-columns: 1fr; }
+    .report-filter-form { grid-template-columns: 1fr; gap: 12px; }
+    .report-filter-actions { grid-column: auto; }
+    .report-title-row { align-items: flex-start; flex-direction: column; }
+    .report-export-actions { width: 100%; justify-content: flex-start; }
+    .report-export-actions .button { flex: 1 1 145px; }
+    .report-table-wrap { max-height: 65vh; }
+    .report-table { min-width: 820px; }
     .catalog-filter { grid-template-columns: minmax(0, 1fr) auto; }
     .catalog-filter input { grid-column: 1 / -1; }
     .catalog-filter select { grid-column: 1; }

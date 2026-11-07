@@ -295,7 +295,11 @@ class LibraryOperationsTest extends TestCase
         $this->get(route('reports.index', $filters))
             ->assertOk()
             ->assertSee(route('reports.pdf', $filters))
-            ->assertSee('Cetak / Unduh PDF');
+            ->assertSee('Cetak / Unduh PDF')
+            ->assertSee('Atur laporan')
+            ->assertSee('report-filter-form')
+            ->assertSee('report-table-wrap')
+            ->assertSee('Laporan Koleksi Buku');
     }
 
     public function test_report_pdf_download_returns_a_valid_pdf_file(): void

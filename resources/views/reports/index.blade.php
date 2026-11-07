@@ -86,10 +86,16 @@
         </div>
 
         <section class="card card-pad report-filter-card">
+            <div class="section-title">
+                <div>
+                    <h2>Atur laporan</h2>
+                    <p>Pilih jenis data dan rentang tanggal yang ingin ditinjau.</p>
+                </div>
+            </div>
             <form method="GET" action="{{ route('reports.index') }}" class="report-filter-form">
                 <div class="field">
-                    <label for="type">Jenis laporan</label>
-                    <select id="type" name="type">
+                    <label for="report-type">Jenis laporan</label>
+                    <select id="report-type" name="type">
                         <option value="members" @selected($type === 'members')>Data Anggota</option>
                         <option value="books" @selected($type === 'books')>Koleksi Buku</option>
                         <option value="loans" @selected($type === 'loans')>Peminjaman</option>
@@ -97,16 +103,16 @@
                     </select>
                 </div>
                 <div class="field">
-                    <label for="start_date">Dari tanggal</label>
-                    <input id="start_date" type="date" name="start_date" value="{{ $startDate }}">
+                    <label for="report-start-date">Dari tanggal</label>
+                    <input id="report-start-date" type="date" name="start_date" value="{{ $startDate }}">
                 </div>
                 <div class="field">
-                    <label for="end_date">Sampai tanggal</label>
-                    <input id="end_date" type="date" name="end_date" value="{{ $endDate }}">
+                    <label for="report-end-date">Sampai tanggal</label>
+                    <input id="report-end-date" type="date" name="end_date" value="{{ $endDate }}">
                 </div>
                 <div class="report-filter-actions">
-                    <button class="button" type="submit">Tampilkan</button>
-                    <a class="button button-secondary" href="{{ route('reports.index', ['type' => $type]) }}">Reset</a>
+                    <button class="button" type="submit">Tampilkan laporan</button>
+                    <a class="button button-secondary" href="{{ route('reports.index', ['type' => $type]) }}">Reset filter</a>
                 </div>
             </form>
         </section>
@@ -115,12 +121,13 @@
             <div class="section-title report-title-row">
                 <div>
                     <h2>{{ $title }}</h2>
-                    <p>
-                        {{ count($rows) }} data ditemukan
-                        @if ($startDate || $endDate)
-                            · Periode {{ $startDate ? \Illuminate\Support\Carbon::parse($startDate)->format('d/m/Y') : 'awal' }}
-                            sampai {{ $endDate ? \Illuminate\Support\Carbon::parse($endDate)->format('d/m/Y') : 'sekarang' }}
-                        @endif
+                    <p>{{ count($rows) }} baris ditemukan
+                        <span class="report-period">
+                            Periode
+                            {{ $startDate ? \Illuminate\Support\Carbon::parse($startDate)->format('d/m/Y') : 'awal' }}
+                            sampai
+                            {{ $endDate ? \Illuminate\Support\Carbon::parse($endDate)->format('d/m/Y') : 'sekarang' }}
+                        </span>
                     </p>
                 </div>
                 <div class="report-export-actions">
@@ -130,20 +137,27 @@
                 </div>
             </div>
 
-            <div class="table-wrap">
-                <table>
-                    <thead><tr>@foreach ($headers as $header)<th>{{ $header }}</th>@endforeach</tr></thead>
-                    <tbody>
-                        @forelse ($rows as $row)
-                            <tr>@foreach ($row as $cell)<td>{{ $cell }}</td>@endforeach</tr>
-                        @empty
-                            <tr><td colspan="{{ count($headers) }}">
-                                <div class="empty-state">Tidak ada data untuk laporan dan periode yang dipilih.</div>
-                            </td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            @if ($rows === [])
+                <div class="report-empty-state">
+                    <span class="report-empty-icon" aria-hidden="true">—</span>
+                    <strong>Tidak ada data laporan</strong>
+                    <p>Coba rentang tanggal lain atau reset filter untuk melihat data yang tersedia.</p>
+                </div>
+            @else
+                <p class="report-scroll-hint">Geser tabel ke samping untuk melihat semua kolom.</p>
+                <div class="table-wrap report-table-wrap" role="region" aria-label="Data laporan {{ $title }}" tabindex="0">
+                    <table class="report-table">
+                        <thead>
+                            <tr>@foreach ($headers as $header)<th scope="col">{{ $header }}</th>@endforeach</tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($rows as $row)
+                                <tr>@foreach ($row as $cell)<td>{{ $cell }}</td>@endforeach</tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </section>
     </x-app-layout>
 @endif
