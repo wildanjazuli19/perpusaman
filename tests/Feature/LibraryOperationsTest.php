@@ -2,9 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\ActivityLog;
 use App\Models\Book;
-use App\Models\BookReturn;
 use App\Models\Category;
 use App\Models\Loan;
 use App\Models\Member;
@@ -79,6 +77,13 @@ class LibraryOperationsTest extends TestCase
 
         $book = Book::query()->where('title', 'Dasar Pengujian')->sole();
         $this->assertSame(4, $book->stock_available);
+        $this->get(route('categories.index'))
+            ->assertOk()
+            ->assertSee('category-layout')
+            ->assertSee('Tambah kategori')
+            ->assertSee('Masih digunakan')
+            ->assertSee('category-name-'.$category->id);
+
         $this->assertDatabaseHas('activity_logs', [
             'user_id' => $user->id,
             'route_name' => 'categories.store',

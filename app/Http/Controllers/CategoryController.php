@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
@@ -19,23 +19,25 @@ class CategoryController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $request->validateWithBag('categoryCreate', [
             'name' => ['required', 'string', 'max:100', 'unique:categories,name'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
         Category::create($validated);
+
         return redirect()->route('categories.index')->with('status', 'Kategori berhasil ditambahkan.');
     }
 
     public function update(Request $request, Category $category): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $request->validateWithBag('categoryEdit'.$category->id, [
             'name' => ['required', 'string', 'max:100', Rule::unique('categories', 'name')->ignore($category->id)],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $category->update($validated);
+
         return redirect()->route('categories.index')->with('status', 'Kategori berhasil diperbarui.');
     }
 
@@ -46,6 +48,7 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+
         return redirect()->route('categories.index')->with('status', 'Kategori berhasil dihapus.');
     }
 }
