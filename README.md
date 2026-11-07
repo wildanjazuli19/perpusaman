@@ -39,7 +39,7 @@ Buka `http://127.0.0.1:8000`, lalu buat akun pengelola pertama. Setelah akun dib
 
 ## Pengelolaan kunci
 
-Key pair ML-KEM-768 dibuat saat enkripsi pertama dan disimpan di `storage/app/private/keys/ml-kem-768.json`. Private key dibungkus menggunakan enkripsi Laravel dan `APP_KEY`; file kunci lokal tidak masuk Git. Simpan cadangan file tersebut dan `APP_KEY` secara terpisah. Perubahan `APP_KEY` tanpa pemulihan key lama membuat private key yang tersimpan tidak dapat dibuka kembali.
+Key pair ML-KEM-768 dibuat saat enkripsi pertama dan disimpan di `storage/app/private/keys/ml-kem-768.json`. Private key dibungkus menggunakan enkripsi Laravel dan `APP_KEY`; file kunci lokal tidak masuk Git. Saat digunakan, aplikasi memastikan lokasi key berada di luar direktori publik, mengatur permission direktori menjadi `0700`, serta file private key dan file lock menjadi `0600`. Jika permission aman tidak dapat diterapkan, operasi gagal. Lokasi alternatif melalui `MLKEM_KEY_PATH` juga harus berada di luar direktori publik. Simpan cadangan file tersebut dan `APP_KEY` secara terpisah. Perubahan `APP_KEY` tanpa pemulihan key lama membuat private key yang tersimpan tidak dapat dibuka kembali.
 
 Kunci AES baseline diturunkan dari `APP_KEY` melalui HKDF. Nonce GCM dan salt HKDF dibuat acak untuk setiap proses enkripsi.
 

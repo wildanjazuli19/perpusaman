@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\MemberCryptography;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 use Tests\TestCase;
 
 class MemberCryptographyTest extends TestCase
@@ -20,7 +21,7 @@ class MemberCryptographyTest extends TestCase
     {
         parent::setUp();
 
-        $this->keyPath = storage_path('framework/testing/mlkem-'.bin2hex(random_bytes(8)).'.json');
+        $this->keyPath = storage_path('framework/testing/mlkem-'.bin2hex(random_bytes(8)).'/private.json');
         config(['crypto.key_path' => $this->keyPath]);
     }
 
@@ -32,7 +33,43 @@ class MemberCryptographyTest extends TestCase
             }
         }
 
+        if (is_dir(dirname($this->keyPath))) {
+            rmdir(dirname($this->keyPath));
+        }
+
         parent::tearDown();
+    }
+
+    public function test_private_key_and_storage_directory_permissions_are_enforced(): void
+    {
+        $cryptography = app(MemberCryptography::class);
+        $data = ['nama' => 'Anggota Uji'];
+
+        $cryptography->protect($data);
+
+        $this->assertSame(0700, fileperms(dirname($this->keyPath)) & 0777);
+        $this->assertSame(0600, fileperms($this->keyPath) & 0777);
+        $this->assertSame(0600, fileperms($this->keyPath.'.lock') & 0777);
+
+        $this->assertTrue(chmod(dirname($this->keyPath), 0755));
+        $this->assertTrue(chmod($this->keyPath, 0644));
+
+        $cryptography->protect($data);
+
+        $this->assertSame(0700, fileperms(dirname($this->keyPath)) & 0777);
+        $this->assertSame(0600, fileperms($this->keyPath) & 0777);
+    }
+
+    public function test_private_key_storage_inside_public_directory_is_rejected(): void
+    {
+        config(['crypto.key_path' => public_path('mlkem-'.bin2hex(random_bytes(8)).'/private.json')]);
+
+        try {
+            app(MemberCryptography::class)->protect(['nama' => 'Anggota Uji']);
+            $this->fail('Lokasi key di direktori publik seharusnya ditolak.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Private key ML-KEM harus disimpan di luar direktori publik.', $exception->getMessage());
+        }
     }
 
     public function test_member_data_is_encrypted_before_storage_and_can_be_decrypted(): void
