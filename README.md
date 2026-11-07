@@ -57,10 +57,63 @@ Key pair ML-KEM-768 dibuat saat enkripsi pertama dan disimpan di `storage/app/pr
 
 Kunci AES baseline diturunkan dari `APP_KEY` melalui HKDF. Nonce GCM dan salt HKDF dibuat acak untuk setiap proses enkripsi.
 
+## Backup dan pemulihan
+
+Database, file private key ML-KEM, dan rahasia konfigurasi adalah satu set pemulihan yang saling terkait. Backup yang hanya berisi database atau hanya file key tidak cukup. Simpan backup di media/lokasi terpisah dengan enkripsi at rest dan akses terbatas. Perintah snapshot di bawah tidak mengenkripsi hasilnya sendiri; gunakan volume terenkripsi atau enkripsi backup sebelum memindahkannya ke penyimpanan jangka panjang. Jangan masukkan file backup atau nilai `APP_KEY` ke Git, tiket, atau log.
+
+### Membuat backup
+
+1. Pastikan paket SQLite CLI (`sqlite3`) tersedia dan siapkan tujuan backup pada volume terenkripsi dengan akses terbatas. Contoh berikut memakai `/secure-backups/perpusaman`; ganti dengan lokasi backup yang sesuai.
+2. Buat snapshot SQLite yang konsisten menggunakan perintah `.backup` (sesuaikan sumber bila `DB_DATABASE` memakai lokasi selain default):
+
+   ```sh
+   umask 077
+   mkdir -p /secure-backups/perpusaman
+   sqlite3 database/database.sqlite ".backup '/secure-backups/perpusaman/database.sqlite'"
+   ```
+
+3. Salin file key ke tujuan yang sama, lalu simpan salinan `APP_KEY` dan konfigurasi `MLKEM_KEY_PATH`/`DB_DATABASE` pada secret manager atau media terenkripsi terpisah. Jika `MLKEM_KEY_PATH` tidak diatur, file key ada di `storage/app/private/keys/ml-kem-768.json`.
+
+   ```sh
+   cp storage/app/private/keys/ml-kem-768.json /secure-backups/perpusaman/ml-kem-768.json
+   chmod 600 /secure-backups/perpusaman/database.sqlite /secure-backups/perpusaman/ml-kem-768.json
+   ```
+
+4. Catat waktu backup dan identitas versi rahasia di secret manager tanpa mencatat nilai rahasianya. Uji pemulihan berkala di lingkungan terisolasi, termasuk login serta dekripsi satu record uji. Jangan menguji dengan menimpa data produksi.
+
+### Memulihkan backup
+
+1. Hentikan akses tulis ke aplikasi dan worker. Pilih satu set backup yang cocok; pulihkan database dan private key yang dibuat pada waktu backup yang sama.
+2. Pulihkan database ke path `DB_DATABASE`, private key ke path `MLKEM_KEY_PATH` (atau lokasi default), dan pulihkan `APP_KEY` pasangannya dari secret manager. Jangan membuat `APP_KEY` baru untuk membuka backup lama.
+3. Pastikan direktori key hanya dapat diakses akun aplikasi (`0700`) dan file key hanya dapat dibaca/ditulis akun aplikasi (`0600`). Bersihkan cache konfigurasi lalu periksa migrasi tanpa menjalankan migrasi otomatis:
+
+   ```sh
+   chmod 700 storage/app/private/keys
+   chmod 600 storage/app/private/keys/ml-kem-768.json
+   php artisan config:clear
+   php artisan migrate:status
+   ```
+
+   Sesuaikan perintah permission jika menggunakan `MLKEM_KEY_PATH` alternatif. Pastikan file dimiliki akun sistem yang menjalankan aplikasi.
+4. Sebelum membuka akses, verifikasi aplikasi dapat membaca database dan private key, login Admin berhasil, dan record uji lama dapat didekripsi. Jika verifikasi gagal, hentikan pemulihan dan pulihkan kembali set backup yang cocok.
+
+### Rotasi APP_KEY dan private key ML-KEM
+
+Jangan menjalankan `php artisan key:generate` pada instalasi aktif sebagai cara rotasi. `APP_KEY` melindungi pembungkus private key ML-KEM dan menjadi sumber kunci AES baseline, sedangkan private key ML-KEM diperlukan untuk membuka record hybrid yang sudah tersimpan. Mengganti salah satu kunci tanpa mengenkripsi ulang data dapat membuat data lama tidak dapat dipulihkan.
+
+Laravel `APP_PREVIOUS_KEYS` dapat membantu membaca data yang dibungkus Laravel `Crypt` dengan kunci sebelumnya, tetapi aplikasi ini menurunkan kunci AES baseline langsung dari `APP_KEY`. Karena itu, `APP_PREVIOUS_KEYS` saja **tidak** membuat seluruh data baseline kompatibel setelah rotasi. Aplikasi juga belum menyediakan alat migrasi/rotasi data end-to-end; jangan mengganti `APP_KEY` atau menimpa file key ML-KEM pada sistem yang memiliki data penting sampai prosedur migrasi diuji.
+
+Rencana rotasi yang aman:
+
+1. Jadwalkan maintenance dan buat serta uji backup lengkap sesuai prosedur di atas. Siapkan pemulihan rollback sebelum mengubah kunci.
+2. Gunakan alat migrasi terisolasi yang mendukung pembacaan dengan kunci lama dan penulisan dengan kunci baru. Untuk `APP_KEY`, alat itu harus mengenkripsi ulang seluruh private key ML-KEM yang dibungkus serta seluruh ciphertext AES baseline. Untuk rotasi ML-KEM, alat itu harus mendekripsi dan mengenkripsi ulang seluruh payload hybrid dengan pasangan kunci baru.
+3. Verifikasi setiap record hasil migrasi dapat didekripsi dan autentikasi tetap valid. Jangan menghapus atau menimpa kunci lama sebelum verifikasi dan backup hasil migrasi berhasil.
+4. Aktifkan kunci baru, pantau error dekripsi, lalu simpan backup lama secara terisolasi hanya selama masa rollback yang ditetapkan. Hapus kunci lama dari konfigurasi/penyimpanan setelah rollback tidak lagi diperlukan dan seluruh pemulihan dengan kunci baru telah diuji.
+
 ## Pengujian
 
 ```sh
 php artisan test
 ```
 
-Benchmark mencatat hasil runtime lokal; hasilnya bukan klaim performa umum. Gunakan data sintetis untuk demo dan pengujian. Prototipe ini belum menyediakan otorisasi berbasis peran, deployment hardening, backup terenkripsi, maupun integrasi dengan data produksi.
+Benchmark mencatat hasil runtime lokal; hasilnya bukan klaim performa umum. Gunakan data sintetis untuk demo dan pengujian. Prototipe ini belum menyediakan otorisasi berbasis peran, deployment hardening, backup otomatis terenkripsi, maupun integrasi dengan data produksi.
